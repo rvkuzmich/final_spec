@@ -116,4 +116,28 @@ VALUES
 ('Damsel', '2020-09-11', 'eat, move'),
 ('Dune', '2023-08-15', 'move'),
 ('Roxy', '2024-01-19', 'eat'),
-('Cona', '2021-12-17', 'eat, move');
+('Comma', '2021-12-17', 'eat, move');
+
+TRUNCATE camel;
+
+DROP TABLE IF EXISTS artiodactyl;
+CREATE TABLE artiodactyl
+(
+    id SERIAL PRIMARY KEY,
+    artiodactyl_name VARCHAR(20),
+    birth_date DATE,
+    commands TEXT
+);
+
+INSERT INTO artiodactyl(artiodactyl_name, birth_date, commands)
+SELECT(horse_name, birth_date, commands)
+FROM horse;
+
+INSERT INTO artiodactyl(artiodactyl_name, birth_date, commands)
+SELECT(donkey_name, birth_date, commands)
+FROM donkey;
+
+DROP TABLE IF EXISTS horse;
+DROP TABLE IF EXISTS donkey;
+
+
