@@ -1,11 +1,14 @@
-CREATE SCHEMA `human_friends` ;
+CREATE SCHEMA `human_friends`;
 
 USE human_friends;
 
-DROP TABLE IF EXISTS animal;
-CREATE TABLE animal
+DROP TABLE IF EXISTS animals;
+CREATE TABLE animals
 (
 	id SERIAL PRIMARY KEY,
+    animal_name VARCHAR(20),
+    birth_date DATE,
+    commands TEXT,
     subclass_name VARCHAR(20)
 );
 
@@ -14,7 +17,7 @@ CREATE TABLE pet
 (
 	id SERIAL PRIMARY KEY,
     family_name VARCHAR(20)
-)
+);
 
 DROP TABLE IF EXISTS dog;
 CREATE TABLE dog
@@ -130,14 +133,66 @@ CREATE TABLE artiodactyl
 );
 
 INSERT INTO artiodactyl(artiodactyl_name, birth_date, commands)
-SELECT(horse_name, birth_date, commands)
+SELECT horse_name, birth_date, commands
 FROM horse;
 
 INSERT INTO artiodactyl(artiodactyl_name, birth_date, commands)
-SELECT(donkey_name, birth_date, commands)
+SELECT donkey_name, birth_date, commands
 FROM donkey;
 
-DROP TABLE IF EXISTS horse;
-DROP TABLE IF EXISTS donkey;
+TRUNCATE horse;
+TRUNCATE donkey;
 
+DROP TABLE IF EXISTS young_animals;
+CREATE TABLE young_animals
+(
+    id SERIAL PRIMARY KEY,
+    animal_name VARCHAR(20),
+    birth_date DATE,
+    commands TEXT,
+    age TEXT
+);
 
+DELIMITER //
+CREATE FUNCTION calc_age(birthdate DATE)
+RETURNS TEXT
+DETERMINISTIC
+BEGIN
+    DECLARE res TEXT DEFAULT '';
+    SET res = CONCAT
+        (
+            TIMESTAMPDIFF(YEAR, birthdate, CURDATE()), ' years ',
+            TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) % 12, ' months'
+        );
+    RETURN res;
+END //
+DELIMITER ;
+
+INSERT INTO young_animals(animal_name, birth_date, commands, age)
+SELECT dog_name, birth_date, commands, calc_age(birth_date)
+FROM dog
+WHERE TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 1 AND 2
+UNION ALL
+SELECT cat_name, birth_date, commands, calc_age(birth_date)
+FROM cat
+WHERE TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 1 AND 2
+UNION ALL
+SELECT hamster_name, birth_date, commands, calc_age(birth_date)
+FROM hamster
+WHERE TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 1 AND 2
+UNION ALL
+SELECT artiodactyl_name, birth_date, commands, calc_age(birth_date)
+FROM artiodactyl
+WHERE TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 1 AND 2;
+
+DELETE FROM dog
+WHERE TIMESTAMPDIFF(YEAR, dog.birth_date, CURDATE()) IN (1, 2);
+
+DELETE FROM cat
+WHERE TIMESTAMPDIFF(YEAR, cat.birth_date, CURDATE()) IN (1, 2);
+
+DELETE FROM hamster 
+WHERE TIMESTAMPDIFF(YEAR, hamster.birth_date, CURDATE()) IN (1, 2);
+
+DELETE FROM artiodactyl 
+WHERE TIMESTAMPDIFF(YEAR, artiodactyl.birth_date, CURDATE()) IN (1, 2);
