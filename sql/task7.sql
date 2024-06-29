@@ -8,8 +8,7 @@ CREATE TABLE animals
 	id SERIAL PRIMARY KEY,
     animal_name VARCHAR(20),
     birth_date DATE,
-    commands TEXT,
-    subclass_name VARCHAR(20)
+    commands TEXT
 );
 
 DROP TABLE IF EXISTS pet;
@@ -196,3 +195,33 @@ WHERE TIMESTAMPDIFF(YEAR, hamster.birth_date, CURDATE()) IN (1, 2);
 
 DELETE FROM artiodactyl 
 WHERE TIMESTAMPDIFF(YEAR, artiodactyl.birth_date, CURDATE()) IN (1, 2);
+
+DROP TABLE IF EXISTS all_animals;
+CREATE TABLE all_animals
+(
+    id SERIAL PRIMARY KEY,
+    animal_name VARCHAR(20),
+    birth_date DATE,
+    commands TEXT,
+    p_table ENUM ('dog', 'cat', 'hamster', 'artiodactyl', 'young_animals') NOT NULL
+);
+
+INSERT INTO all_animals (animal_name, birth_date, commands, p_table)
+SELECT dog_name, birth_date, commands, 'dog'
+FROM dog;
+
+INSERT INTO all_animals (animal_name, birth_date, commands, p_table)
+SELECT cat_name, birth_date, commands, 'cat'
+FROM cat;
+
+INSERT INTO all_animals (animal_name, birth_date, commands, p_table)
+SELECT hamster_name, birth_date, commands, 'hamster'
+FROM hamster;
+
+INSERT INTO all_animals (animal_name, birth_date, commands, p_table)
+SELECT artiodactyl_name, birth_date, commands, 'artiodactyl'
+FROM artiodactyl;
+
+INSERT INTO all_animals (animal_name, birth_date, commands, p_table)
+SELECT animal_name, birth_date, commands, 'young_animals'
+FROM young_animals;
