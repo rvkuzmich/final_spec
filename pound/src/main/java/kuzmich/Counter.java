@@ -7,7 +7,7 @@ public class Counter implements AutoCloseable {
         counter++;
     }
 
-    public int getCounter() {
+    public int getCount() {
         return counter;
     }
 
