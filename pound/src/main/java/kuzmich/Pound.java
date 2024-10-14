@@ -1,8 +1,7 @@
 package kuzmich;
 
 import kuzmich.controller.PoundController;
-import kuzmich.model.Animal;
-import kuzmich.model.Dog;
+
 
 import java.util.Scanner;
 
@@ -14,5 +13,4 @@ public class Pound
         poundController.start(sc);
 
     }
-
 }
